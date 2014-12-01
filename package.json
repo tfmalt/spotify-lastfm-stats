@@ -1,0 +1,36 @@
+{
+  "name": "spotify-lastfm-stats",
+  "version": "0.0.1",
+  "description": "Script to fetch spotify statistics from last.fm",
+  "homepage": "http://github.com/tfmalt/spotify-lastfm-stats",
+  "keywords": [
+    "Spotify",
+    "Last.fm",
+    "Statistics",
+    "API",
+    "node"
+  ],
+  "author": "Thomas Malt <thomas@malt.no>",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/tfmalt/spotify-lastfm-stats"
+  },
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "engines": {
+    "node": ">=0.10.33"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com//sdeering/npm-boilerplate/raw/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "redis": "^0.12.1",
+    "request": "^2.49.0"
+  }
+}
