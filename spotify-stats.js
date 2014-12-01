@@ -10,8 +10,6 @@ var request = require('request');
 var redis   = require('redis');
 var config  = require('./config');
 
-console.log(config);
-
 var lastfm = {
     json: '',
     db: redis.createClient(config.redis.port, config.redis.host, config.redis.options),
@@ -45,7 +43,6 @@ lastfm.doGetData = function() {
             lastfm.db.quit();
         }
         else {
-            console.log(JSON.stringify(json));
             lastfm.handleResult(json.recenttracks.track);
         }
     });
@@ -57,6 +54,14 @@ lastfm.doFetch = function() {
         if (value !== null) {
             lastfm.options.from = value;
         }
+
+        var now = (new Date()).setMilliseconds(0).getTime()/1000;
+        if (now - value < 300) {
+            console.log("Trying to run too soon. exiting");
+            lastfm.db.quit();
+            process.exit();
+        }
+
         lastfm.doGetData();
     });
 };
@@ -84,7 +89,7 @@ lastfm.handleResult = function(tracks) {
             title: item.name,
             album: item.album['#text']
         };
-
+        console.log("Track: ", track);
         lastfm.db.lpush("tracks", JSON.stringify(track));
     });
 
