@@ -19,7 +19,8 @@ var lastfm = {
         api_key: config.lastfm.api_key,
         limit: 200,
         format: "json"
-    }
+    },
+    lastfetch: 0
 };
 
 lastfm.doGetData = function() {
@@ -53,6 +54,7 @@ lastfm.doFetch = function() {
         console.log("lastfetch: ", value);
         if (value !== null) {
             lastfm.options.from = value;
+            lastfm.lastfetch = value;
         }
 
         var now = (new Date()).setMilliseconds(0)/1000;
@@ -78,8 +80,8 @@ lastfm.run = function() {
 lastfm.handleResult = function(tracks) {
     console.log("Got tracks: ", tracks.length);
 
-    var now = new Date();
-    now.setMilliseconds(0);
+    // var now = new Date();
+    // now.setMilliseconds(0);
 
     tracks.reverse();
 
@@ -96,11 +98,17 @@ lastfm.handleResult = function(tracks) {
             title: item.name,
             album: item.album['#text']
         };
-        console.log("Track: ", track);
-        lastfm.db.lpush("tracks", JSON.stringify(track));
+
+        if (track.timestamp > lastfm.lastfetch) {
+            console.log("Track: ", track);
+            lastfm.db.lpush("tracks", JSON.stringify(track));
+            lastfm.lastfetch = track.timestamp;
+            lastfm.db.set('lastfetch', lastfm.lastfetch);
+        } else {
+            console.log("got timestamp before lastfetch:", track.timestamp, lastfm.lastfetch);
+        }
     });
 
-    lastfm.db.set('lastfetch', now.getTime()/1000);
     lastfm.db.quit();
 }
 
