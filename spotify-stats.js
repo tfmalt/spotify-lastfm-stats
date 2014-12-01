@@ -56,6 +56,7 @@ lastfm.doFetch = function() {
         }
 
         var now = (new Date()).setMilliseconds(0)/1000;
+        console.log("now value diff: ", now, value, now - value);
         if (now - value < 300) {
             console.log("Trying to run too soon. exiting");
             lastfm.db.quit();
