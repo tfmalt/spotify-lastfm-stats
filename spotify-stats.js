@@ -83,7 +83,7 @@ lastfm.handleResult = function(tracks) {
 
     lastfm.db.set('lastfetch', (now.getTime()/1000));
     tracks.forEach(function(item) {
-        if (undefined item.date.uts) {
+        if (typeof item.date.uts === 'undefined') {
             console.log("got date undefined for: ", item);
             return;
         }
