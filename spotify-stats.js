@@ -28,14 +28,17 @@ lastfm.doGetData = function() {
         .get("http://ws.audioscrobbler.com/2.0/")
         .query(lastfm.options)
         .end(function(res) {
-            console.log("Do I have res:", res);
             console.log("status code:", res.status);
             console.log("headers:", res.headers);
+
             if (res.body.hasOwnProperty("error")) {
                 console.log("got error:", res.body);
                 lastfm.db.quit();
             }
-            else if (res.body.recenttracks.hasOwnProperty('page') && res.body.recenttracks.page == 0) {
+            else if (
+                res.body.recenttracks.hasOwnProperty('page') &&
+                res.body.recenttracks.page == 0
+            ) {
                 console.log("Got empty result", res.body);
                 lastfm.db.quit();
             }
@@ -75,9 +78,6 @@ lastfm.run = function() {
 
 lastfm.handleResult = function(tracks) {
     console.log("Got tracks: ", tracks.length);
-
-    // var now = new Date();
-    // now.setMilliseconds(0);
 
     tracks.reverse();
 
