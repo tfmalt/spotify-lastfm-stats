@@ -81,7 +81,8 @@ lastfm.handleResult = function(tracks) {
     var now = new Date();
     now.setMilliseconds(0);
 
-    lastfm.db.set('lastfetch', (now.getTime()/1000));
+    tracks.reverse();
+
     tracks.forEach(function(item) {
         if (typeof item.date === 'undefined') {
             console.log("got date undefined for: ", item);
@@ -99,6 +100,7 @@ lastfm.handleResult = function(tracks) {
         lastfm.db.lpush("tracks", JSON.stringify(track));
     });
 
+    lastfm.db.set('lastfetch', now.getTime()/1000);
     lastfm.db.quit();
 }
 
