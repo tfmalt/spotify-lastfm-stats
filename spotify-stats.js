@@ -23,6 +23,10 @@ var lastfm = {
     lastfetch: 0
 };
 
+/**
+ * Fetches the actual data from the api. Forwards the list of tracks to
+ * handleresult.
+ */
 lastfm.doGetData = function() {
     request
         .get("http://ws.audioscrobbler.com/2.0/")
@@ -48,6 +52,12 @@ lastfm.doGetData = function() {
         });
 };
 
+/**
+ * Fetches timestamp of last time we called the API from the
+ * database.
+ *
+ * Passes on to doGetData.
+ */
 lastfm.doFetch = function() {
     lastfm.db.get('lastfetch', function (err, value) {
         console.log("lastfetch: ", value);
@@ -56,18 +66,14 @@ lastfm.doFetch = function() {
             lastfm.lastfetch = value;
         }
 
-        var now = (new Date()).setMilliseconds(0)/1000;
-        console.log("now value diff: ", now, value, now - value);
-        if (now - value < 300) {
-            console.log("Trying to run too soon. exiting");
-            lastfm.db.quit();
-            process.exit();
-        }
-
         lastfm.doGetData();
     });
 };
 
+/**
+ * Init function when called selectes the correct redis database and
+ * calls doFetch.
+ */
 lastfm.run = function() {
     lastfm.db.select(3, function () {
         console.log("selecting DB 3");
@@ -75,7 +81,12 @@ lastfm.run = function() {
     });
 };
 
-
+/**
+ * Traverses the list of tracks from last.fm and inserts the essential data
+ * into the redis database.
+ *
+ * @param tracks Array list of tracks from last.fm since last time I fetched.
+ */
 lastfm.handleResult = function(tracks) {
     console.log("Got tracks: ", tracks.length);
 
@@ -105,4 +116,5 @@ lastfm.handleResult = function(tracks) {
     lastfm.db.quit();
 }
 
+// run the fetch
 lastfm.run();
