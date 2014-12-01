@@ -55,7 +55,7 @@ lastfm.doFetch = function() {
             lastfm.options.from = value;
         }
 
-        var now = (new Date()).setMilliseconds(0).getTime()/1000;
+        var now = (new Date()).setMilliseconds(0)/1000;
         if (now - value < 300) {
             console.log("Trying to run too soon. exiting");
             lastfm.db.quit();
