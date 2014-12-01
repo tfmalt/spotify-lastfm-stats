@@ -31,6 +31,6 @@
   ],
   "dependencies": {
     "redis": "^0.12.1",
-    "request": "^2.49.0"
+    "superagent": "^0.21.0"
   }
 }
