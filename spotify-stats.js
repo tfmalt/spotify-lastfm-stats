@@ -82,10 +82,7 @@ lastfm.handleResult = function(tracks) {
     tracks.reverse();
 
     tracks.forEach(function(item) {
-        if (typeof item.date === 'undefined') {
-            console.log("got date undefined for: ", item);
-            return;
-        }
+        if (typeof item.date === 'undefined') return;
 
         var track = {
             timestamp: item.date.uts,
