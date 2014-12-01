@@ -33,7 +33,8 @@ lastfm.doGetData = function() {
         console.log("response: ", res.headers);
     }).on('data', function (data) {
         lastfm.json += data;
-    }).on('end', function () {
+    }).on('end', function (res) {
+        console.log("Do I have res:", res);
         var json = JSON.parse(lastfm.json);
         if (json.hasOwnProperty("error")) {
             console.log("got error:", json);
