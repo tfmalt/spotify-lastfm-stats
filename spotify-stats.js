@@ -101,7 +101,7 @@ lastfm.handleResult = function(tracks) {
 
         if (track.timestamp > lastfm.lastfetch) {
             console.log("Track: ", track);
-            lastfm.db.lpush("tracks", JSON.stringify(track));
+            lastfm.db.rpush("tracks", JSON.stringify(track));
             lastfm.lastfetch = track.timestamp;
             lastfm.db.set('lastfetch', lastfm.lastfetch);
         } else {
