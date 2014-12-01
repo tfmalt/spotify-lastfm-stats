@@ -6,7 +6,7 @@
  * @author Thomas Malt <thomas@malt.no>
  */
 
-var request = require('request');
+var request = require('superagent');
 var redis   = require('redis');
 var config  = require('./config');
 
@@ -24,30 +24,25 @@ var lastfm = {
 };
 
 lastfm.doGetData = function() {
-    request.get({
-        uri: "http://ws.audioscrobbler.com/2.0/",
-        qs: lastfm.options
-
-    }).on('response', function (res) {
-        console.log("status: ", res.statusCode);
-        console.log("response: ", res.headers);
-    }).on('data', function (data) {
-        lastfm.json += data;
-    }).on('end', function (res) {
-        console.log("Do I have res:", res);
-        var json = JSON.parse(lastfm.json);
-        if (json.hasOwnProperty("error")) {
-            console.log("got error:", json);
-            lastfm.db.quit();
-        }
-        else if (json.recenttracks.hasOwnProperty('page') && json.recenttracks.page == 0) {
-            console.log("Got empty result", json);
-            lastfm.db.quit();
-        }
-        else {
-            lastfm.handleResult(json.recenttracks.track);
-        }
-    });
+    request
+        .get("http://ws.audioscrobbler.com/2.0/")
+        .query(lastfm.options)
+        .end(function(res) {
+            console.log("Do I have res:", res);
+            console.log("status code:", res.status);
+            console.log("headers:", res.headers);
+            if (res.body.hasOwnProperty("error")) {
+                console.log("got error:", res.body);
+                lastfm.db.quit();
+            }
+            else if (res.body.recenttracks.hasOwnProperty('page') && res.body.recenttracks.page == 0) {
+                console.log("Got empty result", res.body);
+                lastfm.db.quit();
+            }
+            else {
+                lastfm.handleResult(res.body.recenttracks.track);
+            }
+        });
 };
 
 lastfm.doFetch = function() {
